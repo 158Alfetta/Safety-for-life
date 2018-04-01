@@ -2,6 +2,7 @@
 #include <LCD.h>
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
+#include <SoftwareSerial.h>
 
 #define I2C_ADDR 0x3F // <
 #define BACKLIGHT_PIN 3
@@ -19,7 +20,8 @@ byte colPins[COLS] = {4,3,2}; //connect to the column pinouts of the keypad
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 LiquidCrystal_I2C lcd(I2C_ADDR,2,1,0,4,5,6,7);
-
+SoftwareSerial MegaSerial(43, 42); // RX | TX
+int count_cg;
 int count = 0; //Counting_Char_On_Dispay(16_or_32)
 char cmd_chk[4]; //Check_Show_or_Reset_Password
 int ast_count=0; // counting asterisk '*' (ดอกจัน)
@@ -34,6 +36,9 @@ lcd.begin (16,2); // <
 lcd.setBacklightPin(BACKLIGHT_PIN,POSITIVE);
 lcd.setBacklight(HIGH);
 Serial.begin(9600);
+pinMode(43,INPUT);
+pinMode(42,OUTPUT);
+MegaSerial.begin(57600);
 }
 
 void loop()
@@ -98,29 +103,15 @@ void loop()
       lcd.print(password);
       delay(5000);
       lcd.clear();
-    }else if(cmd_chk[0] == '*' && cmd_chk[1] == '#'&& cmd_chk[2] == '*'&& cmd_chk[3] == '#'){
-      lcd.print("-ROOT SETUP-");
-      delay(2500);
-      lcd.clear();
-      for(int i=0;i<34;i++){
-        lcd.setCursor(i, 1);
-        lcd.print(char(255));
-        lcd.setCursor(i-1, 1);
-        lcd.print(char(255));
-        lcd.setCursor(i-1, 0);
-        lcd.print(char(255));
-        lcd.setCursor(i-2, 1);
-        lcd.print(char(255));
-        lcd.setCursor(i-4, 1);
-        lcd.print('K');
-        lcd.setCursor(i-5, 1);
-        lcd.print('C');
-        lcd.setCursor(i-6, 1);
-        lcd.print('U');
-        lcd.setCursor(i-7, 1);
-        lcd.print('F');
-        delay(500);
-        lcd.clear();
+      count_cg = 0;
+      MegaSerial.print(47); // specific number for various option set.
+      while(count_cg<8){
+        delay(2000);
+        int i_data = password[count];
+        Serial.print(i_data);
+        MegaSerial.print(i_data);MegaSerial.print("\n");
+        delay(100);
+        count_cg++; 
       }
     }
     ast_count = 0;
