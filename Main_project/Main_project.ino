@@ -38,6 +38,7 @@ lcd.setBacklight(HIGH);
 Serial.begin(9600);
 pinMode(43,INPUT);
 pinMode(42,OUTPUT);
+pinMode(50,INPUT);
 MegaSerial.begin(57600);
 }
 
@@ -60,59 +61,60 @@ void loop()
   }
   if(ast_count == 4){
     if(cmd_chk[0] == '*' && cmd_chk[1] == '*'&& cmd_chk[2] == '*'&& cmd_chk[3] == '*'){
-      lcd.clear();
-      lcd.print("PW: ");
-      lcd.print(password);
-      delay(3000);
+      lcd.clear();lcd.print("PW: ");lcd.print(password);
+      delay(1000);
       lcd.clear();
     }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#'&& cmd_chk[3] == '#'){
-      lcd.clear();
-      lcd.print("CHANGE PASSWORD");
-      lcd.setCursor(0, 1);
-      lcd.print("-----SETUP.-----");
-      delay(3000);
-      lcd.clear();
-      lcd.setCursor(0, 0);
-      lcd.print("Enter New PW");
-      lcd.setCursor(0, 1);
-      lcd.print("PW MustBe 8 Char");
-      delay(5000);
-      lcd.clear();
-      lcd.print("New_PW:");
+      // LCD setting part
+      lcd.clear();lcd.print("CHANGE PASSWORD");
+      lcd.setCursor(0, 1);lcd.print("-----SETUP.-----");
+      delay(1000);
+      lcd.clear();lcd.setCursor(0, 0);lcd.print("Enter New PW");
+      lcd.setCursor(0, 1);lcd.print("PW MustBe 8 Char");
+      delay(1300);
+      lcd.clear();lcd.print("New_PW:");
       int j=7;
+      delay(500);
+      // check status
       for(int i=0;i<8;i++){
+        delay(500);
         while(1){
           key = keypad.getKey();
           if(key != NO_KEY){
             if(key == '*' || key == '#'){
-              lcd.setCursor(0, 1);
-              lcd.print("CAN'T USE *, #");
+              lcd.setCursor(0, 1);lcd.print("CAN'T USE *, #");
               continue;
             }
-            password[i] = key;
+            password[i] = key; // change password state
             break;
           }
         }
-        lcd.setCursor(j, 0);
-        lcd.print(password[i]);
+        lcd.setCursor(j, 0);lcd.print(password[i]);
         j++;
+        //END LCD
       }
-      lcd.clear();
-      lcd.print("YOUR NEW PW IS:");
-      lcd.setCursor(0, 1);
-      lcd.print(password);
+      MegaSerial.print(47);
+      
+      while(1){
+        Serial.println("Waiting for NodeMCU");
+        int status_mcu = MegaSerial.parseInt();
+        Serial.println(status_mcu);
+        if(!digitalRead(50)){
+          int cnt=0;
+          while(cnt<8){
+            delay(200);
+            int i_data = password[cnt];
+            Serial.print(i_data);
+            MegaSerial.print(i_data);MegaSerial.print("\n");
+            delay(100);
+            cnt++;
+          }
+          break;
+        }
+      }
+      lcd.clear();lcd.print("YOUR NEW PW IS:");lcd.setCursor(0, 1);lcd.print(password);
       delay(5000);
       lcd.clear();
-      count_cg = 0;
-      MegaSerial.print(47); // specific number for various option set.
-      while(count_cg<8){
-        delay(2000);
-        int i_data = password[count];
-        Serial.print(i_data);
-        MegaSerial.print(i_data);MegaSerial.print("\n");
-        delay(100);
-        count_cg++; 
-      }
     }
     ast_count = 0;
     count=0;
