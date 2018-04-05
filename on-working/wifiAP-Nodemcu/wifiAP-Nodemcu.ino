@@ -23,24 +23,28 @@ void loop() {
     Serial.println(password);
     cg_pw = NodeSerial.parseInt();
   //change_pw
-  Serial.print("cg_pw : ");Serial.println(cg_pw);
-  if(cg_pw==47){
+  Serial.print("cg_pw : ");Serial.print(cg_pw);
+  if(cg_pw==47)
+      {
+      delay(100);
       Serial.println("COMEIN");
-      delay(200);
-      NodeSerial.print(47);
       digitalWrite(D2,HIGH);
       delay(500);
       digitalWrite(D2,LOW);
-      int i_data = NodeSerial.parseInt();
-      if (NodeSerial.read() == '\n' && count<8) 
-      {
-        Serial.print("PASSWORD CHANGE"); Serial.println(" : "); 
-        Serial.print(i_data); Serial.print(" : "); 
-        cha = i_data;
-        Serial.println(cha);
-        password[count] = cha;
-        count++;
+      while(count<8){
+        int i_data = NodeSerial.parseInt();
+        if (NodeSerial.read() == '\n' && count<8) 
+        {
+          Serial.print("PASSWORD CHANGE"); Serial.println(" : "); 
+          Serial.print(i_data); Serial.print(" : "); 
+          cha = i_data;
+          Serial.println(cha);
+          password[count] = cha;
+          count++;
+          delay(200);
+        }
       }
+      count = 0;
       Serial.print("Password : ");
       Serial.print(password);
       delay(50);

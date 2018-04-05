@@ -71,13 +71,13 @@ void loop()
       delay(1000);
       lcd.clear();lcd.setCursor(0, 0);lcd.print("Enter New PW");
       lcd.setCursor(0, 1);lcd.print("PW MustBe 8 Char");
-      delay(1300);
+      delay(1200);
       lcd.clear();lcd.print("New_PW:");
       int j=7;
-      delay(500);
+      delay(200);
       // check status
       for(int i=0;i<8;i++){
-        delay(500);
+        delay(200);
         while(1){
           key = keypad.getKey();
           if(key != NO_KEY){
@@ -94,11 +94,10 @@ void loop()
         //END LCD
       }
       MegaSerial.print(47);
+      delay(2500);
       
       while(1){
         Serial.println("Waiting for NodeMCU");
-        int status_mcu = MegaSerial.parseInt();
-        Serial.println(status_mcu);
         if(!digitalRead(50)){
           int cnt=0;
           while(cnt<8){
