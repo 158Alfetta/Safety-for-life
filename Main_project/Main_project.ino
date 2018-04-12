@@ -21,6 +21,7 @@ byte colPins[COLS] = {4,3,2}; //connect to the column pinouts of the keypad
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 LiquidCrystal_I2C lcd(I2C_ADDR,2,1,0,4,5,6,7);
 SoftwareSerial MegaSerial(52, 53); // RX | T
+
 int count_cg;
 int count = 0; //Counting_Char_On_Dispay(16_or_32)
 char cmd_chk[4]; //Check_Show_or_Reset_Password
@@ -29,10 +30,15 @@ int first_char_chk=0; // confirm that '*' need to be first
 char password[20]="88888888"; //Password_AP (Just sample)
 char tmp_pw[20]; //in case of cancel change password
 int state_door = 1; // check status (about '000#' command on keypad)
-int door_num;
-unsigned long timer;
-unsigned long time_door;
-unsigned long time_ir;
+int door_num; // DOOR STATUS (21 = Ready)
+int SIG = 26; // IR
+int EN = 28; // IR
+unsigned long timer; // real time
+unsigned long detect_door; // detect time (start)
+unsigned long detect_ir; // detect time (start)
+long warn_door=20000; // limit
+long warn_ir=6000; // limit
+int ir_det;
 
 void setup()
 {
@@ -44,30 +50,48 @@ pinMode(52,INPUT);// Serial Input NodeMCU
 pinMode(53,OUTPUT);// Serial Output NodeMCU
 pinMode(51,INPUT);// Serial2 Input NodeMCU
 pinMode(48,OUTPUT);// command Relay to open the door
-pinMode(30,INPUT); //SIG IR
-pinMode(31,OUTPUT); // EN IR
+pinMode(SIG, INPUT);
+pinMode(EN, OUTPUT);
+digitalWrite(EN, 1);
 MegaSerial.begin(57600);
 }
 
 void loop()
 {
+  timer = millis();
   //lcd.print("SERCURITY SYSTEM");
   //lcd.setCursor(0, 0);lcd.print("STATUS : ACTIVE");
   char key = keypad.getKey();
   //****_Show_Password_####_to_Reset_Password
+            
   if(digitalRead(51)){
     door_num=21;
-    Serial.println("51");
     delay(200);
   }
+  
   if(door_num==21){
     lcd.clear();lcd.print("-DOOR  UNLOCKED-");
-    Serial.println("door unlocked");
-    digitalWrite(48, HIGH);
-    delay(5000);
+    detect_door = timer;
+    ir_det = 0;
+    while((timer-detect_door)<warn_door && !ir_det){
+      timer = millis();
+      digitalWrite(48, HIGH);
+      if(!digitalRead(SIG)){
+        detect_ir = timer;
+        while((timer-detect_ir)<warn_ir){
+          timer = millis();
+        }
+        digitalWrite(EN, 0);
+        digitalWrite(48, LOW);
+        lcd.clear();lcd.print("-##DOOR LOCKED##");
+        delay(300);
+        ir_det = 1;
+      }
+    }
     digitalWrite(48, LOW);
     door_num = 0;
-    lcd.clear();
+    lcd.clear();lcd.print("-##DOOR LOCKED##");
+    delay(300);lcd.clear();
   }
   if (key != NO_KEY){
     if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0){ // detected '*' & '#' & '0'
@@ -136,8 +160,7 @@ void loop()
       lcd.clear();
     }else if(cmd_chk[0] == '0' && cmd_chk[1] == '0'&& cmd_chk[2] == '0' && cmd_chk[3] == '#'){
       lcd.clear();lcd.print("OPEN WIFI");delay(500);lcd.clear();
-      digitalWrite(48, LOW);
-      
+      digitalWrite(EN, 1);
     }
     ast_count = 0;
     count=0;
