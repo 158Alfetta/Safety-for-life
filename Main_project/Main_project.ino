@@ -20,7 +20,7 @@ byte colPins[COLS] = {4,3,2}; //connect to the column pinouts of the keypad
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 LiquidCrystal_I2C lcd(I2C_ADDR,2,1,0,4,5,6,7);
-SoftwareSerial MegaSerial(43, 42); // RX | TX
+SoftwareSerial MegaSerial(52, 53); // RX | T
 int count_cg;
 int count = 0; //Counting_Char_On_Dispay(16_or_32)
 char cmd_chk[4]; //Check_Show_or_Reset_Password
@@ -28,7 +28,11 @@ int ast_count=0; // counting asterisk '*' (ดอกจัน)
 int first_char_chk=0; // confirm that '*' need to be first
 char password[20]="88888888"; //Password_AP (Just sample)
 char tmp_pw[20]; //in case of cancel change password
-int state_door = 0; // check status
+int state_door = 1; // check status (about '000#' command on keypad)
+int door_num;
+unsigned long timer;
+unsigned long time_door;
+unsigned long time_ir;
 
 void setup()
 {
@@ -36,19 +40,37 @@ lcd.begin (16,2); // <
 lcd.setBacklightPin(BACKLIGHT_PIN,POSITIVE);
 lcd.setBacklight(HIGH);
 Serial.begin(9600);
-pinMode(43,INPUT);
-pinMode(42,OUTPUT);
-pinMode(50,INPUT);
+pinMode(52,INPUT);// Serial Input NodeMCU
+pinMode(53,OUTPUT);// Serial Output NodeMCU
+pinMode(51,INPUT);// Serial2 Input NodeMCU
+pinMode(48,OUTPUT);// command Relay to open the door
+pinMode(30,INPUT); //SIG IR
+pinMode(31,OUTPUT); // EN IR
 MegaSerial.begin(57600);
 }
 
 void loop()
 {
+  //lcd.print("SERCURITY SYSTEM");
+  //lcd.setCursor(0, 0);lcd.print("STATUS : ACTIVE");
   char key = keypad.getKey();
   //****_Show_Password_####_to_Reset_Password
-  
+  if(digitalRead(51)){
+    door_num=21;
+    Serial.println("51");
+    delay(200);
+  }
+  if(door_num==21){
+    lcd.clear();lcd.print("-DOOR  UNLOCKED-");
+    Serial.println("door unlocked");
+    digitalWrite(48, HIGH);
+    delay(5000);
+    digitalWrite(48, LOW);
+    door_num = 0;
+    lcd.clear();
+  }
   if (key != NO_KEY){
-    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0){ // detected '*' & '#'
+    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0){ // detected '*' & '#' & '0'
       cmd_chk[ast_count] = key; // fills the '*' in array for checking  
       ast_count++;
     }
@@ -98,7 +120,6 @@ void loop()
       
       while(1){
         Serial.println("Waiting for NodeMCU");
-        if(!digitalRead(50)){
           int cnt=0;
           while(cnt<8){
             delay(200);
@@ -109,11 +130,14 @@ void loop()
             cnt++;
           }
           break;
-        }
       }
       lcd.clear();lcd.print("YOUR NEW PW IS:");lcd.setCursor(0, 1);lcd.print(password);
-      delay(5000);
+      delay(3000);
       lcd.clear();
+    }else if(cmd_chk[0] == '0' && cmd_chk[1] == '0'&& cmd_chk[2] == '0' && cmd_chk[3] == '#'){
+      lcd.clear();lcd.print("OPEN WIFI");delay(500);lcd.clear();
+      digitalWrite(48, LOW);
+      
     }
     ast_count = 0;
     count=0;
@@ -122,7 +146,7 @@ void loop()
     lcd.setCursor(0, 1);
     }
   else if(count == 32){ // Display Full
-    delay(500);
+    delay(50);
     lcd.clear();
     count = 0;
     first_char_chk = 0;

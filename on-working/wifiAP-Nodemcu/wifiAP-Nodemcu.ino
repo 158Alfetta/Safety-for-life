@@ -7,7 +7,7 @@ extern "C" {
 
 SoftwareSerial NodeSerial(D2,D3); // RX | TX
 
-int count=0, cg_pw=0;
+int count=0, cg_pw=0, door_state = 1;
 char cha, password[9]="88888888";
 
 ESP8266WebServer server(80);
@@ -17,26 +17,30 @@ void handleRoot() {
 }
 
 void setup() {
-  pinMode(D2, INPUT); 
-  pinMode(D3, OUTPUT);
-  pinMode(D4, OUTPUT);
-  pinMode(D7, OUTPUT);
+  pinMode(D2, INPUT); // get input from Mega wire to 53
+  pinMode(D3, OUTPUT); // Output to Megawire to 52
+  pinMode(D1, OUTPUT); // 2 get input from Mega wire to 51
   Serial.begin(9600);
   NodeSerial.begin(57600);
-  Serial.println("NodeMCU/ESP8266 Run");
-  //wifi statement
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP("I LUV COMPRO++", password);
 }
 
 void loop() {
+  //if(!digitalRead(D8)){
+  //  WiFi.softAPdisconnect(1);
+  //}else{
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP("I LOVE COMPRO", password);
+  //}
   server.handleClient();
   delay(10);
-  if(client_status()){
+  if(client_status() && door_state){
     Serial.println("ON");
-    digitalWrite(D7,HIGH);
-  }else{
-    digitalWrite(D7,LOW);
+    digitalWrite(D1, 1);
+    delay(100);
+    digitalWrite(D1, 0);
+    door_state = 0;
+  }else if(!client_status() && !door_state){
+    door_state = 1;
   }
   Serial.println("Password : ");
   Serial.println(password);
@@ -47,9 +51,7 @@ void loop() {
       {
       delay(100);
       Serial.println("COMEIN");
-      digitalWrite(D2,HIGH);
       delay(500);
-      digitalWrite(D2,LOW);
       while(count<8){
         int i_data = NodeSerial.parseInt();
         if (NodeSerial.read() == '\n' && count<8) 
@@ -67,9 +69,6 @@ void loop() {
       Serial.print("Password : ");
       Serial.print(password);
       delay(50);
-    delay(10);
-    WiFi.mode(WIFI_AP);
-    WiFi.softAP("NodeMCU", password);
   }
 }
 
