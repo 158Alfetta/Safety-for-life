@@ -29,22 +29,27 @@ int noteDurations[] = {
 
 void setup() {
   // iterate over the notes of the melody:
-  for (int thisNote = 0; thisNote < 8; thisNote++) {
+  //for (int thisNote = 0; thisNote < 8; thisNote++) {
 
     // to calculate the note duration, take one second divided by the note type.
     //e.g. quarter note = 1000 / 4, eighth note = 1000/8, etc.
-    int noteDuration = 1000 / noteDurations[thisNote];
-    tone(8, melody[thisNote], noteDuration);
+  //  int noteDuration = 1000 / noteDurations[thisNote];
+  // tone(10, melody[thisNote], noteDuration);
 
     // to distinguish the notes, set a minimum time between them.
     // the note's duration + 30% seems to work well:
-    int pauseBetweenNotes = noteDuration * 1.30;
-    delay(pauseBetweenNotes);
+  //  int pauseBetweenNotes = noteDuration * 1.30;
+  //  delay(pauseBetweenNotes);
     // stop the tone playing:
-    noTone(8);
-  }
+  //  noTone(10);
+  //}
+  pinMode(10, OUTPUT);
+  tone(10, NOTE_E5, 200);
 }
 
 void loop() {
-  // no need to repeat the melody.
+  //tone(10, NOTE_C4, 200);
+  //delay(300);
+  //tone(10, NOTE_A3, 200);
+  
 }

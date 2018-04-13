@@ -7,7 +7,7 @@ extern "C" {
 
 SoftwareSerial NodeSerial(D2,D3); // RX | TX
 
-int count=0, cg_pw=0, door_state = 1;
+int count=0, command=0, door_state = 1, ap_status=1;
 char cha, password[9]="88888888";
 
 ESP8266WebServer server(80);
@@ -25,12 +25,12 @@ void setup() {
 }
 
 void loop() {
-  //if(!digitalRead(D8)){
-  //  WiFi.softAPdisconnect(1);
-  //}else{
+  if(!ap_status){
+    WiFi.softAPdisconnect(1);
+  }else{
     WiFi.mode(WIFI_AP);
     WiFi.softAP("I LOVE COMPRO", password);
-  //}
+  }
   server.handleClient();
   delay(10);
   if(client_status() && door_state){
@@ -44,10 +44,10 @@ void loop() {
   }
   Serial.println("Password : ");
   Serial.println(password);
-  cg_pw = NodeSerial.parseInt();
-  //change_pw
-  Serial.print("cg_pw : ");Serial.print(cg_pw);
-  if(cg_pw==47)
+  command = NodeSerial.parseInt();
+  //get command 15 disconnect wifi / 47 change password // 16 open wifi
+  Serial.print("command : ");Serial.print(command);
+  if(command==47)
       {
       delay(100);
       Serial.println("COMEIN");
@@ -69,6 +69,12 @@ void loop() {
       Serial.print("Password : ");
       Serial.print(password);
       delay(50);
+  }else if(command==15){
+    ap_status = 0;
+    Serial.println("AP MODE = OFF");
+  }else if(command==16){
+    ap_status=1;
+    Serial.println("AP MODE = ON");
   }
 }
 

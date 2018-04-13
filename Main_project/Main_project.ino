@@ -29,7 +29,6 @@ int ast_count=0; // counting asterisk '*' (ดอกจัน)
 int first_char_chk=0; // confirm that '*' need to be first
 char password[20]="88888888"; //Password_AP (Just sample)
 char tmp_pw[20]; //in case of cancel change password
-int state_door = 1; // check status (about '000#' command on keypad)
 int door_num; // DOOR STATUS (21 = Ready)
 int SIG = 26; // IR
 int EN = 28; // IR
@@ -58,9 +57,11 @@ MegaSerial.begin(57600);
 
 void loop()
 {
+  if(!digitalRead(SIG)){
+    lcd.clear();lcd.print("-FUCKYOU!-");delay(3000);lcd.clear();
+    //add line notification
+  }
   timer = millis();
-  //lcd.print("SERCURITY SYSTEM");
-  //lcd.setCursor(0, 0);lcd.print("STATUS : ACTIVE");
   char key = keypad.getKey();
   //****_Show_Password_####_to_Reset_Password
             
@@ -83,18 +84,21 @@ void loop()
         }
         digitalWrite(EN, 0);
         digitalWrite(48, LOW);
+        MegaSerial.print(15);
         lcd.clear();lcd.print("-##DOOR LOCKED##");
+        lcd.setCursor(0, 1);lcd.print("WELCOME BACK!");
+        lcd.setCursor(0, 0);
         delay(300);
         ir_det = 1;
       }
     }
     digitalWrite(48, LOW);
-    door_num = 0;
     lcd.clear();lcd.print("-##DOOR LOCKED##");
     delay(300);lcd.clear();
+    door_num = 0;
   }
   if (key != NO_KEY){
-    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0){ // detected '*' & '#' & '0'
+    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0 || key == '9' && first_char_chk == 0){ // detected '*' & '#' & '0'
       cmd_chk[ast_count] = key; // fills the '*' in array for checking  
       ast_count++;
     }
@@ -110,7 +114,7 @@ void loop()
       lcd.clear();lcd.print("PW: ");lcd.print(password);
       delay(1000);
       lcd.clear();
-    }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#'&& cmd_chk[3] == '#'){
+    }else if(cmd_chk[0] == '9' && cmd_chk[1] == '9'&& cmd_chk[2] == '9'&& cmd_chk[3] == '#'){
       // LCD setting part
       lcd.clear();lcd.print("CHANGE PASSWORD");
       lcd.setCursor(0, 1);lcd.print("-----SETUP.-----");
@@ -159,8 +163,23 @@ void loop()
       delay(3000);
       lcd.clear();
     }else if(cmd_chk[0] == '0' && cmd_chk[1] == '0'&& cmd_chk[2] == '0' && cmd_chk[3] == '#'){
-      lcd.clear();lcd.print("OPEN WIFI");delay(500);lcd.clear();
+      lcd.clear();lcd.print("HAVE A GOOD DAY");lcd.setCursor(0, 1);
+      lcd.print("#DOOR UNLOCKED#");
+      MegaSerial.print(16);
+      delay(250);
+      digitalWrite(48, HIGH);
+      delay(8000);
+      digitalWrite(48, LOW);
       digitalWrite(EN, 1);
+      lcd.clear();lcd.setCursor(0, 0);
+    }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#' && cmd_chk[3] == '#'){
+      digitalWrite(48, HIGH);
+      lcd.clear();lcd.print("WILL LOCK AGAIN");lcd.setCursor(0, 1);
+      lcd.print("IN 8 SECOND!");
+      delay(8000);
+      lcd.clear();lcd.setCursor(0, 0);lcd.print("#DOOR LOCKED!#");
+      delay(500);lcd.clear();
+      digitalWrite(48, LOW);
     }
     ast_count = 0;
     count=0;
