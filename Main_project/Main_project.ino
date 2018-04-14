@@ -3,6 +3,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 #include <SoftwareSerial.h>
+#include "pitches.h"
 
 #define I2C_ADDR 0x3F // <
 #define BACKLIGHT_PIN 3
@@ -51,6 +52,7 @@ pinMode(51,INPUT);// Serial2 Input NodeMCU
 pinMode(48,OUTPUT);// command Relay to open the door
 pinMode(SIG, INPUT);
 pinMode(EN, OUTPUT);
+pinMode(10, OUTPUT);
 digitalWrite(EN, 1);
 MegaSerial.begin(57600);
 }
@@ -58,8 +60,14 @@ MegaSerial.begin(57600);
 void loop()
 {
   if(!digitalRead(SIG)){
-    lcd.clear();lcd.print("-FUCKYOU!-");delay(3000);lcd.clear();
-    //add line notification
+    lcd.clear();lcd.print("Alert!");delay(500);lcd.clear();
+    MegaSerial.print(12);
+    delay(5000);
+    for(int i=0;i<30;i++){
+     tone(10, NOTE_C4, 200);
+     delay(300);
+     tone(10, NOTE_A3, 200); 
+    }
   }
   timer = millis();
   char key = keypad.getKey();
@@ -78,11 +86,17 @@ void loop()
       timer = millis();
       digitalWrite(48, HIGH);
       if(!digitalRead(SIG)){
+        tone(10, NOTE_E4, 600);
         detect_ir = timer;
         while((timer-detect_ir)<warn_ir){
           timer = millis();
         }
         digitalWrite(EN, 0);
+        tone(10, NOTE_A6, 90);
+        delay(150);
+        tone(10, NOTE_A6, 90);
+        delay(150);
+        tone(10, NOTE_A6, 90);
         digitalWrite(48, LOW);
         MegaSerial.print(15);
         lcd.clear();lcd.print("-##DOOR LOCKED##");
@@ -111,10 +125,12 @@ void loop()
   }
   if(ast_count == 4){
     if(cmd_chk[0] == '*' && cmd_chk[1] == '*'&& cmd_chk[2] == '*'&& cmd_chk[3] == '*'){
+      tone(10, NOTE_E6, 100);
       lcd.clear();lcd.print("PW: ");lcd.print(password);
       delay(1000);
       lcd.clear();
     }else if(cmd_chk[0] == '9' && cmd_chk[1] == '9'&& cmd_chk[2] == '9'&& cmd_chk[3] == '#'){
+      tone(10, NOTE_E6, 100);
       // LCD setting part
       lcd.clear();lcd.print("CHANGE PASSWORD");
       lcd.setCursor(0, 1);lcd.print("-----SETUP.-----");
@@ -163,23 +179,37 @@ void loop()
       delay(3000);
       lcd.clear();
     }else if(cmd_chk[0] == '0' && cmd_chk[1] == '0'&& cmd_chk[2] == '0' && cmd_chk[3] == '#'){
+      tone(10, NOTE_E6, 100);
       lcd.clear();lcd.print("HAVE A GOOD DAY");lcd.setCursor(0, 1);
       lcd.print("#DOOR UNLOCKED#");
       MegaSerial.print(16);
       delay(250);
       digitalWrite(48, HIGH);
-      delay(8000);
+      tone(10, NOTE_E4, 700);
+      delay(7000);
+      tone(10, NOTE_A6, 90);
+      delay(150);
+      tone(10, NOTE_A6, 90);
+      delay(150);
+      tone(10, NOTE_A6, 90);
       digitalWrite(48, LOW);
       digitalWrite(EN, 1);
       lcd.clear();lcd.setCursor(0, 0);
     }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#' && cmd_chk[3] == '#'){
+      tone(10, NOTE_E6, 100);
       digitalWrite(48, HIGH);
+      tone(10, NOTE_E4, 700);
       lcd.clear();lcd.print("WILL LOCK AGAIN");lcd.setCursor(0, 1);
       lcd.print("IN 8 SECOND!");
-      delay(8000);
+      delay(7000);
+      tone(10, NOTE_A6, 90);
+      delay(150);
+      tone(10, NOTE_A6, 90);
+      delay(150);
+      tone(10, NOTE_A6, 90);
+      digitalWrite(48, LOW);
       lcd.clear();lcd.setCursor(0, 0);lcd.print("#DOOR LOCKED!#");
       delay(500);lcd.clear();
-      digitalWrite(48, LOW);
     }
     ast_count = 0;
     count=0;

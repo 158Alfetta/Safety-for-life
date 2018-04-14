@@ -44,12 +44,11 @@ void setup() {
   //  noTone(10);
   //}
   pinMode(10, OUTPUT);
-  tone(10, NOTE_E5, 200);
 }
 
 void loop() {
-  //tone(10, NOTE_C4, 200);
-  //delay(300);
-  //tone(10, NOTE_A3, 200);
+  tone(10, NOTE_C4, 200);
+  delay(300);
+  tone(10, NOTE_A3, 200);
   
 }
