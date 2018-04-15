@@ -11,7 +11,7 @@ this sercurity system let you know that
   * Fills the password every time. ----------> Unnecessary
   
 Just need the smartphone can connect to WIFI. Only 2 Step!
-  * Connect WiFi via NodeMCU
+  * Connect WiFi to NodeMCU.
   * Door Unlocked!
 
 How incredible!   (แม่งเขียนดูขิงไปป่าววะ)
