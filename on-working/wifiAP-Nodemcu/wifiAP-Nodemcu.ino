@@ -7,9 +7,8 @@ extern "C" {
 
 SoftwareSerial NodeSerial(D2,D3); // RX | TX
 
-int count=0, command=0, door_state = 1, ap_status=1;
+int count=0, command=0, ap_status=1, door_state = 1;
 char cha, password[9]="88888888";
-String LINE_TOKEN = "WtMZXp16iiizFrFegxtgZnh61U7QTBjEvrdbThZgI3e";
 
 ESP8266WebServer server(80);
 
@@ -43,7 +42,7 @@ void loop() {
   }else if(!client_status() && !door_state){
     door_state = 1;
   }
-  Serial.println("Password : ");
+  Serial.println(F("Password : "));
   Serial.println(password);
   command = NodeSerial.parseInt();
   //get command 15 disconnect wifi / 47 change password // 16 open wifi
@@ -57,8 +56,8 @@ void loop() {
         int i_data = NodeSerial.parseInt();
         if (NodeSerial.read() == '\n' && count<8) 
         {
-          Serial.print("PASSWORD CHANGE"); Serial.println(" : "); 
-          Serial.print(i_data); Serial.print(" : "); 
+          Serial.print(F("PASSWORD CHANGE")); Serial.println(F(" : ")); 
+          Serial.print(i_data); Serial.print(F(" : ")); 
           cha = i_data;
           Serial.println(cha);
           password[count] = cha;
@@ -67,20 +66,13 @@ void loop() {
         }
       }
       count = 0;
-      Serial.print("Password : ");
-      Serial.print(password);
       delay(50);
   }else if(command==15){
     ap_status = 0;
-    wificonnect(LINE_TOKEN, "Welcome Back! You have got into. If it not you, Your house was invaded.");
-    Serial.println("AP MODE = OFF");
+    Serial.println(F("AP MODE = OFF"));
   }else if(command==16){
     ap_status=1;
-    wificonnect(LINE_TOKEN, "You left home now, Have a good day!");
-    Serial.println("AP MODE = ON");
-  }else if(command==12){
-    ap_status=1;
-    wificonnect(LINE_TOKEN, "Alert!! WITHOUT PERMISSION SIGN IN, YOUR HOUSE WAS INVADED");
+    Serial.println(F("AP MODE = ON"));
   }
 }
 
@@ -99,67 +91,14 @@ int client_status(){
     IPaddress = &stat_info->ip;
     address = IPaddress->addr;
     
-    //Serial.print("client= ");
-    //Serial.print(i);
-    //Serial.print(" ip adress is = ");
-    //Serial.print((address));
     if(address){
-      Serial.println("COMPLETE");
+      Serial.println(F("COMPLETE"));
       chk=1;
     }
     stat_info = STAILQ_NEXT(stat_info, next);
     i++;
-    Serial.println();
-    
   }
   return chk;
 }
 
-void wificonnect(String LINE_Token, String message){
-  WiFi.softAPdisconnect(1);
-  
-  WiFi.begin("redmi4x", "77777776");
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  String msg = String("message=") + message;
-
-  WiFiClientSecure client;
-  if (!client.connect("notify-api.line.me", 443)) {
-    Serial.println("connection failed");
-    return;
-  }
-
-  String req = "";
-  req += "POST /api/notify HTTP/1.1\r\n";
-  req += "Host: notify-api.line.me\r\n";
-  req += "Content-Type: application/x-www-form-urlencoded\r\n";
-  req += "Authorization: Bearer " + String(LINE_Token) + "\r\n";
-  req += "Content-Length: " + String(msg.length()) + "\r\n";
-  req += "\r\n";
-  req +=  msg;
-
-  client.print(req);
-
-  unsigned long timeout = millis();
-  while (client.available() == 0) {
-    if (millis() - timeout > 5000) {
-      Serial.println(">>> Client Timeout !");
-      client.stop();
-      return;
-    }
-  }
-
-  // Read all the lines of the reply from server and print them to Serial
-  while (client.available()) {
-    String line = client.readStringUntil('\r');
-    Serial.print(line);
-  }
-
-  Serial.println();
-  Serial.println("closing connection");
-  WiFi.disconnect();
-}
 
