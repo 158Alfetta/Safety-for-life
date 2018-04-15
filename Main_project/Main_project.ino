@@ -53,6 +53,9 @@ pinMode(48,OUTPUT);// command Relay to open the door
 pinMode(SIG, INPUT);
 pinMode(EN, OUTPUT);
 pinMode(10, OUTPUT);
+pinMode(35, OUTPUT);// Connect to Nodemcu2 (wire to D0) 
+pinMode(37, OUTPUT);// Connect to Nodemcu2 (wire to D1) 
+pinMode(39, OUTPUT);// Connect to Nodemcu2 (wire to D2) 
 digitalWrite(EN, 1);
 MegaSerial.begin(57600);
 }
@@ -61,7 +64,9 @@ void loop()
 {
   if(!digitalRead(SIG)){
     lcd.clear();lcd.print("Alert!");delay(500);lcd.clear();
-    MegaSerial.print(12);
+    digitalWrite(35, 1);
+    delay(70);
+    digitalWrite(35, 0);
     delay(5000);
     for(int i=0;i<30;i++){
      tone(10, NOTE_C4, 200);
@@ -99,6 +104,9 @@ void loop()
         tone(10, NOTE_A6, 90);
         digitalWrite(48, LOW);
         MegaSerial.print(15);
+        digitalWrite(37, 1);
+        delay(70);
+        digitalWrite(37, 0);
         lcd.clear();lcd.print("-##DOOR LOCKED##");
         lcd.setCursor(0, 1);lcd.print("WELCOME BACK!");
         lcd.setCursor(0, 0);
@@ -194,6 +202,9 @@ void loop()
       tone(10, NOTE_A6, 90);
       digitalWrite(48, LOW);
       digitalWrite(EN, 1);
+      digitalWrite(39, 1);
+      delay(70);
+      digitalWrite(39, 0);
       lcd.clear();lcd.setCursor(0, 0);
     }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#' && cmd_chk[3] == '#'){
       tone(10, NOTE_E6, 100);
