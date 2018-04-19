@@ -12,9 +12,6 @@ char cha, password[9]="88888888";
 
 ESP8266WebServer server(80);
 
-void handleRoot() { 
-  server.send(200, "text/html", "<h1>You are connected</h1>");
-}
 
 void setup() {
   pinMode(D2, INPUT); // get input from Mega wire to 53
