@@ -36,7 +36,7 @@ int EN = 28; // IR
 unsigned long timer; // real time
 unsigned long detect_door; // detect time (start)
 unsigned long detect_ir; // detect time (start)
-long warn_door=20000; // limit
+long warn_door=60000; // limit of time waiting for respond form IR
 long warn_ir=6000; // limit
 int ir_det;
 
@@ -55,7 +55,8 @@ pinMode(EN, OUTPUT);
 pinMode(10, OUTPUT);
 pinMode(35, OUTPUT);// Connect to Nodemcu2 (wire to D0) 
 pinMode(37, OUTPUT);// Connect to Nodemcu2 (wire to D1) 
-pinMode(39, OUTPUT);// Connect to Nodemcu2 (wire to D2) 
+pinMode(39, OUTPUT);// Connect to Nodemcu2 (wire to D2)
+pinMode(41, OUTPUT);// Connect to Nodemcu2 (wire to D3) // line notify password has been changed.
 digitalWrite(EN, 1);
 MegaSerial.begin(57600);
 }
@@ -70,7 +71,7 @@ void loop()
     delay(5000);
     for(int i=0;i<30;i++){
      tone(10, NOTE_C4, 200);
-     delay(300);
+     delay(300);0
      tone(10, NOTE_A3, 200); 
     }
   }
@@ -84,18 +85,17 @@ void loop()
   }
   
   if(door_num==21){
-    lcd.clear();lcd.print("-DOOR  UNLOCKED-");
     detect_door = timer;
     ir_det = 0;
     while((timer-detect_door)<warn_door && !ir_det){
       timer = millis();
-      digitalWrite(48, HIGH);
       if(!digitalRead(SIG)){
+        digitalWrite(48, HIGH);
         tone(10, NOTE_E4, 600);
-        detect_ir = timer;
-        while((timer-detect_ir)<warn_ir){
-          timer = millis();
-        }
+        lcd.clear();lcd.print("-##DOOR LOCKED##");
+        lcd.setCursor(0, 1);lcd.print("WELCOME BACK!");
+        delay(6000);
+        lcd.setCursor(0, 0);
         digitalWrite(EN, 0);
         tone(10, NOTE_A6, 90);
         delay(150);
@@ -104,23 +104,19 @@ void loop()
         tone(10, NOTE_A6, 90);
         digitalWrite(48, LOW);
         MegaSerial.print(15);
-        digitalWrite(37, 1);
-        delay(70);
-        digitalWrite(37, 0);
-        lcd.clear();lcd.print("-##DOOR LOCKED##");
-        lcd.setCursor(0, 1);lcd.print("WELCOME BACK!");
-        lcd.setCursor(0, 0);
-        delay(300);
+        digitalWrite(37, 1);  // send line noti.
+        delay(70);            // delay for respond.
+        digitalWrite(37, 0); // close send line noti.
         ir_det = 1;
+        break;
       }
     }
-    digitalWrite(48, LOW);
     lcd.clear();lcd.print("-##DOOR LOCKED##");
     delay(300);lcd.clear();
     door_num = 0;
   }
   if (key != NO_KEY){
-    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0 || key == '9' && first_char_chk == 0){ // detected '*' & '#' & '0'
+    if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0){ // detected '*' & '#' & '0'
       cmd_chk[ast_count] = key; // fills the '*' in array for checking  
       ast_count++;
     }
@@ -190,29 +186,36 @@ void loop()
       tone(10, NOTE_E6, 100);
       lcd.clear();lcd.print("HAVE A GOOD DAY");lcd.setCursor(0, 1);
       lcd.print("#DOOR UNLOCKED#");
-      MegaSerial.print(16);
+      digitalWrite(39, 1);
+      delay(70);
+      digitalWrite(39, 0);
+      MegaSerial.print(16); // send to open AP again.
       delay(250);
       digitalWrite(48, HIGH);
       tone(10, NOTE_E4, 700);
-      delay(7000);
+      delay(6000);
       tone(10, NOTE_A6, 90);
       delay(150);
       tone(10, NOTE_A6, 90);
       delay(150);
       tone(10, NOTE_A6, 90);
       digitalWrite(48, LOW);
+      delay(20000);
       digitalWrite(EN, 1);
-      digitalWrite(39, 1);
-      delay(70);
-      digitalWrite(39, 0);
       lcd.clear();lcd.setCursor(0, 0);
     }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#' && cmd_chk[3] == '#'){
       tone(10, NOTE_E6, 100);
       digitalWrite(48, HIGH);
       tone(10, NOTE_E4, 700);
       lcd.clear();lcd.print("WILL LOCK AGAIN");lcd.setCursor(0, 1);
-      lcd.print("IN 8 SECOND!");
-      delay(7000);
+      for(int i=8; i>0; i--){
+        lcd.print("IN");
+        lcd.setCursor(3, 1);
+        lcd.print(i);
+        lcd.setCursor(5, 1);
+        lcd.print(" SECOND!");
+        delay(700);
+      }
       tone(10, NOTE_A6, 90);
       delay(150);
       tone(10, NOTE_A6, 90);

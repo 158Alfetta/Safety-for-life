@@ -54,13 +54,12 @@ void loop() {
   }
   if(digitalRead(D0)){
     command = 35;
-    delay(300);
   }else if(digitalRead(D1)){
     command = 37;
-    delay(300);
   }else if(digitalRead(D2)){
     command = 39;
-    delay(300);
+  }else if(digitalRead(D3)){
+    command = 41;
   }
 
   if(command == 35){
@@ -71,6 +70,9 @@ void loop() {
     command = 0;
   }else if(command == 39){
     sender(LINE_TOKEN, "You just left, Have a good day!");
+    command = 0;
+  }else if(command == 41){
+    sender(LINE_TOKEN, "Password has been changed!");
     command = 0;
   }
 }
