@@ -23,7 +23,7 @@ in process.
 
 ## Manual
  There have 3 important files.
- 1. Main_project
+ 1. Main_project  
   A main project source of Arduino Mega 2560 Board
   * List of function available
     * LCD Controll (display status, show passord, show input from keypad).
@@ -34,13 +34,13 @@ in process.
     * Send command to NodeMCU#1 (WiFiAP).
     * Send command to NodeMCU#2 (Line Notify).
     * recieve status from both of NodeMCU.
- 2. wifiAP-Nodemcu
+ 2. wifiAP-Nodemcu  
   Source code of NodeMCU V3 (#1) is about WiFi Access Point.
   * List of function available
     * Access point service maximum 5 user.
     * Change password (that recieve data form Mega by serial connection).
     * Access point password protection.
- 3. nodemcu_sender
+ 3. nodemcu_sender  
  Source code of NodeMCU V2 (#2) is about line notify and client wifi.
   * List of function available
     * Act as cilent wifi.
