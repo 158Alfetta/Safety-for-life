@@ -17,7 +17,9 @@ Just need the smartphone can connect to WIFI. Only 2 Step!
 How incredible!
 _____________________________________________________________________________________________________
 
-## Function 
+## Function
+
+in process.
 
 ## Manual
  There have 3 important files.
@@ -41,8 +43,8 @@ ________________________________________________________________________________
  3. nodemcu_sender
  Source code of NodeMCU V2 (#2) is about line notify and client wifi.
   * List of function available
-   * Act as cilent wifi.
-   * Line notification with different 4 message for various situation.
+    * Act as cilent wifi.
+    * Line notification with different 4 message for various situation.
 ## Installation
 
 [Full documentation](https://github.com/compro-itkmitl/demo-repo/wiki/)
