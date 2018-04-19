@@ -14,7 +14,7 @@ Just need the smartphone can connect to WIFI. Only 2 Step!
   * Connect WiFi to NodeMCU.
   * Door Unlocked!
 
-How incredible!   (แม่งเขียนดูขิงไปป่าววะ)
+How incredible!   (ไม่ได้ขิง - -)
 _____________________________________________________________________________________________________
 
 ## Manual
@@ -26,11 +26,18 @@ ________________________________________________________________________________
 [Full documentation](https://github.com/compro-itkmitl/demo-repo/wiki/)
 
 **Requirements**
-* SDL2.0 Library https://www.libsdl.org/
-* libsocket v2.4.1 https://github.com/dermesser/libsocket
+ *List of Library (kindly download in "Library" Branch.)
+  ** Wire.h
+  ** LCD.h
+  ** LiquidCrystal_I2C.h 
+  ** Keypad.h
+  ** SoftwareSerial.h
+  ** pitches.h
 
 ## Author
-* 56070069 : Nonpawit Teerachetmongkol
+* 60070112 อภินันท์ พงศ์รัตนโชติ
+* 60070120 อุดมเอก ชุมทองมา
+* 60070xxx ภูวิศ คุ้มภัย
 
 ---
 
