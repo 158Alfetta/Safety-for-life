@@ -47,7 +47,11 @@ in process.
     * Line notification with different 4 message for various situation.
 ## Installation
 
-[Full documentation](https://github.com/compro-itkmitl/demo-repo/wiki/)
+| Tables        |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
 
 ## Requirements
  List of Library (kindly download in "Library" Branch.)
