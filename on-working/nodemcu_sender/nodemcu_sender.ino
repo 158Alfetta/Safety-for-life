@@ -45,6 +45,7 @@ void setup() {
   pinMode(D0, INPUT); // wire to mega 35
   pinMode(D1, INPUT); // wire to mega 37
   pinMode(D2, INPUT); // wire to mega 39
+  pinMode(D3, INPUT); // wire to mega 41
 }
 
 void loop() {
