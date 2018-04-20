@@ -18,9 +18,27 @@ How incredible!
 _____________________________________________________________________________________________________
 
 ## Function
-
-in process.
-
+ Various situations are there. so you need to know.
+ * Every activities will notice you politely on the 'Line Application'.
+ * if door locked and you need to enter you place.(Sign in)
+   * Connect wifi ssid "I LOVE COMPRO" Fill password ('88888888' is default) with registered device.
+   * When password is correct. you have 60 seconds to stand in front of the door and twist door knob.
+   * While you twist the door knob. Sensor will detect your activity then unlock the door. Sensor will turn off automatically.
+ * if door locked and you want to go outside.(Sign out)
+   * Press "000#" on the keypad. Display Show "----Door Unlocked----" Then you have 6 Seconds to open the door  
+     before the alart sound start.
+   * After you open the door, you have 1 mins for going out. Sensor IR will turn on automatically.
+ * if door locked and you was outside your place.
+   * If IR sensor detect someone who doing unknown activities on your knob. will report line message to you.  
+   and alert sound will play repeating loudly.
+ * if door lock and you need to open temporary.
+   * Press "####" on the keypad. you have 8 seconds to open the door. in this way wifiAP and IR sensor will not turn on and  
+   don't send any notification to you.
+ * On Keypad Function
+   * Press "&ast;&ast;&ast;&ast;" to show corrent password.
+   * Press "000#" to going out.
+   * Press "&ast;#&ast;#" to change password.
+   
 ## Manual
  There have 3 important files.
  1. Main_project  
@@ -45,13 +63,53 @@ in process.
   * List of function available
     * Act as cilent wifi.
     * Line notification with different 4 message for various situation.
+    
 ## Installation
+ List of several pieces of silicon board including how to connect each other.
+ * LCD Display 16x2 Dot Matrix 
+| LCD           | Arduino Mega |   
+| ------------- |-------------|
+| col 3 is      | right-aligned | 
+| col 2 is      | centered      |
+| zebra stripes | are neat      |
+| zebra stripes | are neat      |
+ 
+ * Infrared sensor module (IR)
+ | IR  | Arduino Mega |
+ |-----|--------------|
+ | SIG | 26           |
+ | EN  | 28           |
+ | VCC | 5V           |
+ | GND | GND          |
 
-| Tables        |
-| ------------- |:-------------:| -----:|
-| col 3 is      | right-aligned | $1600 |
-| col 2 is      | centered      |   $12 |
-| zebra stripes | are neat      |    $1 |
+* Relay 5V Module 
+ | Relay | Arduino Mega |
+ |-------|--------------|
+ | IN    | 48           |
+ | OUT   | ??           |
+ | GND   | ??           |
+* Speaker
+ | Speaker            | Arduino Mega |   
+ | ------------- |-------------|
+ | +            | 10           |
+ | -             | GND           |
+* NodeMCU (V3) #1
+ | NodeMCU (V3) #1| Arduino Mega |   
+ | ------------- |-------------|
+ | D1            |   51       |
+ | D2            |   53         |
+ | D3            |   52       |
+ | VIN           |   VIN       |
+ | GND           |   GND      |
+* NodeMCU (V2) #2
+ | NodeMCU (V2) #2| Arduino Mega |   
+ | ------------- |-------------|
+ | D0            |   35       |
+ | D1            |   37         |
+ | D2            |   39       |
+ | D3            |   41       |
+ | GND           |   GND      |
+
 
 ## Requirements
  List of Library (kindly download in "Library" Branch.)
@@ -61,6 +119,7 @@ in process.
   * Keypad.h
   * SoftwareSerial.h
   * pitches.h
+  * ESP8266WiFi.h
 
 ## Author
 * 60070112 อภินันท์ พงศ์รัตนโชติ
