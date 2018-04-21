@@ -3,7 +3,7 @@
 #include <LiquidCrystal_I2C.h>
 #include <Keypad.h>
 #include <SoftwareSerial.h>
-#include "pitches.h"
+#include <pitches.h>
 
 #define I2C_ADDR 0x3F // <
 #define BACKLIGHT_PIN 3
@@ -20,7 +20,7 @@ char keys[ROWS][COLS] = {
 byte rowPins[ROWS] = {8,7,6,5}; //connect to the row pinouts of the keypad
 byte colPins[COLS] = {4,3,2}; //connect to the column pinouts of the keypad
 
-Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
+Keypad keypad = Keypad(makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 LiquidCrystal_I2C lcd(I2C_ADDR,2,1,0,4,5,6,7);
 SoftwareSerial MegaSerial(52, 53); // RX | T
 
@@ -36,9 +36,15 @@ unsigned long timer; // real time
 unsigned long detect_door; // detect time (start)
 unsigned long detect_ir; // detect time (start)
 long warn_door=60000; // limit of time waiting for respond form IR
+int lcd_status = 1;
+int lcd_first = 1;
+
+void AlertNormalSound();
+int LcdShowStatus();
 
 void setup()
 {
+digitalWrite(48, 0);
 lcd.begin (16,2); // <
 lcd.setBacklightPin(BACKLIGHT_PIN,POSITIVE);
 lcd.setBacklight(HIGH);
@@ -65,12 +71,14 @@ pinMode(35, OUTPUT);// (wire to D0) //line notify alert
 pinMode(37, OUTPUT);// (wire to D1) //line notify sign-in
 pinMode(39, OUTPUT);// (wire to D2) //line notify sign-out
 pinMode(41, OUTPUT);// (wire to D3) // line notify password has been changed.
-
 MegaSerial.begin(57600);
 }
 
 void loop()
 {
+  if(lcd_first){ // display status on LCD.
+    lcd_first = LcdShowStatus(lcd_status);
+  }
   if(!digitalRead(SIG)){
     // when detected activities on ลูกบิด and no wifi connect
     // will send notification to line and alarm 
@@ -81,15 +89,18 @@ void loop()
     delay(5000); // waiting for sending  
     for(int i=0;i<30;i++){    //  alarm play
      tone(10, NOTE_C4, 200);
-     delay(300);0
+     delay(300);
      tone(10, NOTE_A3, 200); 
     }
+    lcd_first = 1;
+    lcd_status = 1;
   }
   timer = millis(); // start timing
   char key = keypad.getKey(); // get num from keypad
             
   if(digitalRead(51)){  // recieve wifi ap status check connection.
     door_num=21;
+    digitalWrite(41, 1);delay(50);digitalWrite(41, 1);  //  send to nodemcu#2 to send line notification.
   }
   
   if(door_num==21){   // someone connect to AP
@@ -104,16 +115,14 @@ void loop()
         delay(6000);
         lcd.setCursor(0, 0);
         digitalWrite(EN, 0);    // Turn off IR sensor
-        tone(10, NOTE_A6, 90);
-        delay(150);
-        tone(10, NOTE_A6, 90);
-        delay(150);
-        tone(10, NOTE_A6, 90);
+        AlertNormalSound();
         digitalWrite(48, LOW);
         MegaSerial.print(15);   // Send infomation to Wifi AP to shut down AP.
         digitalWrite(37, 1);  // send line noti.
         delay(70);            // delay for respond.
         digitalWrite(37, 0); // close send line noti.
+        lcd_first = 1;
+        lcd_status = 0;
         break;
       }
     }
@@ -125,6 +134,9 @@ void loop()
   // +++++++++++++++ NEXT SECTION IS ACTIVITIES AROUND THE KEYPAD KUB+++++++++++++++++++++++++++++++++++++++
   
   if (key != NO_KEY){
+    if(count==0){
+      lcd.clear();
+    }
     if(key == '*' && first_char_chk == 0 || key == '#' && first_char_chk == 0 || key == '0' && first_char_chk == 0){ // detected '*' & '#' & '0'
       cmd_chk[ast_count] = key; // fills the '*' in array for checking  
       ast_count++;
@@ -177,7 +189,7 @@ void loop()
       // --------------------------------------------------------
 
       
-      MegaSerial.print(47): // send command to WifiAP
+      MegaSerial.print(47); // send command to WifiAP
       delay(2500); // waiting
 
       // ------------------ SEND TO NODEMCU ---------------------
@@ -197,7 +209,6 @@ void loop()
       // ------------------------------------------------------
       
       lcd.clear();lcd.print("YOUR NEW PW IS:");lcd.setCursor(0, 1);lcd.print(password);delay(3000);lcd.clear();
-      digitalWrite(41, 1);delay(50);digitalWrite(41, 1);  //  send to nodemcu#2 to send line notification.
 
     }else if(cmd_chk[0] == '0' && cmd_chk[1] == '0'&& cmd_chk[2] == '0' && cmd_chk[3] == '#'){
       //  ###############################################
@@ -209,10 +220,6 @@ void loop()
       lcd.clear();lcd.print("HAVE A GOOD DAY");lcd.setCursor(0, 1);
       lcd.print("#DOOR UNLOCKED#");
       
-      digitalWrite(39, 1);  //  send to nodeMCU#2
-      delay(70);
-      digitalWrite(39, 0);
-      
       MegaSerial.print(16); // send to open AP again.
       delay(250);
       
@@ -220,17 +227,18 @@ void loop()
       digitalWrite(48, HIGH);
       tone(10, NOTE_E4, 700);
       delay(6000);
-      tone(10, NOTE_A6, 90);
-      delay(150);
-      tone(10, NOTE_A6, 90);
-      delay(150);
-      tone(10, NOTE_A6, 90);
+      AlertNormalSound();
       digitalWrite(48, LOW);
       // ====================================================
       
       delay(20000);
       digitalWrite(EN, 1);  // open IR Again
       lcd.clear();lcd.setCursor(0, 0);
+      digitalWrite(39, 1);  //  send to nodeMCU#2
+      delay(70);
+      digitalWrite(39, 0);
+      lcd_first = 1;
+      lcd_status = 1;
       
     }else if(cmd_chk[0] == '#' && cmd_chk[1] == '#'&& cmd_chk[2] == '#' && cmd_chk[3] == '#'){
       //  ###############################################
@@ -253,15 +261,13 @@ void loop()
         lcd.clear();
       }
       // +++++++++++++++++++++++++++++++++++++++++++++++++++++++
-      tone(10, NOTE_A6, 90);
-      delay(150);
-      tone(10, NOTE_A6, 90);
-      delay(150);
-      tone(10, NOTE_A6, 90);
+      AlertNormalSound();
       
       digitalWrite(48, LOW); // close door
       lcd.clear();lcd.setCursor(0, 0);lcd.print("#DOOR LOCKED!#");
       delay(500);lcd.clear();
+      lcd_first = 1;
+      lcd_status = 0;
     }
     ast_count = 0;
     count=0;
@@ -279,3 +285,29 @@ void loop()
   }
   // ============================================
 }
+
+void AlertNormalSound(){
+  // #########################################
+  // Play sound reminder the door is closing.
+  // #########################################
+  tone(10, NOTE_A6, 90);
+  delay(150);
+  tone(10, NOTE_A6, 90);
+  delay(150);
+  tone(10, NOTE_A6, 90);
+}
+
+int LcdShowStatus(int lcd_status){
+  // #########################################
+  // LCD DISPLAY THAT SHOW STATUS ALWAYS. 
+  // #########################################
+  if(lcd_status){
+    lcd.print(">SECURITY SYSTEM");lcd.setCursor(0, 1);
+    lcd.print("#FULL ACTIVATED#");lcd.setCursor(0, 0);
+  }else{
+    lcd.print(">SECURITY SYSTEM");lcd.setCursor(0, 1);
+    lcd.print("#SEMI ACTIVATED#");lcd.setCursor(0, 0);
+  }
+  return 0;
+}
+
