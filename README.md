@@ -32,8 +32,7 @@ ________________________________________________________________________________
    * If IR sensor detect someone who doing unknown activities on your knob. will report line message to you.  
    and alert sound will play repeating loudly.
  * if door lock and you need to open temporary.
-   * Press "####" on the keypad. you have 8 seconds to open the door. in this way wifiAP and IR sensor will not turn on and  
-   don't send any notification to you.
+   * Press "####" on the keypad. you have 8 seconds to open the door. in this way wifiAP and IR sensor will not turn on.
  * On Keypad Function
    * Press "&ast;&ast;&ast;&ast;" to show corrent password.
    * Press "000#" to going out.
