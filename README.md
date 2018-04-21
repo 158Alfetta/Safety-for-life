@@ -18,7 +18,7 @@ How incredible!
 _____________________________________________________________________________________________________
 
 ## Function
- Various situations are there. so you need to know.
+ Various situations are there, so you need to know.
  * Every activities will notice you politely on the 'Line Application'.
  * if door locked and you need to enter you place.(Sign in)
    * Connect wifi ssid "I LOVE COMPRO" Fill password ('88888888' is default) with registered device.
