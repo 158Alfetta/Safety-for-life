@@ -76,25 +76,29 @@ ________________________________________________________________________________
 |   GND   |    GND   |
  
  * Infrared sensor module (IR)
- | IR  | Arduino Mega |
- |-----|--------------|
- | SIG | 26           |
- | EN  | 28           |
- | VCC | 5V           |
- | GND | GND          |
+ 
+| IR | Arduino Mega |
+| --------- | ---------- |
+|   SIG   |    26   |
+|   EN   |    28   |
+|   VCC   |    5V   |
+|   GND   |    GND   |  
 
 * Relay 5V Module 
+
  | Relay | Arduino Mega |
  |-------|--------------|
  | IN    | 48           |
  | OUT   | ??           |
  | GND   | ??           |
 * Speaker
+
  | Speaker            | Arduino Mega |   
  | ------------- |-------------|
  | +            | 10           |
  | -             | GND           |
 * NodeMCU (V3) #1
+
  | NodeMCU (V3) #1| Arduino Mega |   
  | ------------- |-------------|
  | D1            |   51       |
@@ -103,6 +107,7 @@ ________________________________________________________________________________
  | VIN           |   VIN       |
  | GND           |   GND      |
 * NodeMCU (V2) #2
+
  | NodeMCU (V2) #2| Arduino Mega |   
  | ------------- |-------------|
  | D0            |   35       |
