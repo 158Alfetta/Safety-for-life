@@ -73,7 +73,7 @@ void loop() {
     sender(LINE_TOKEN, "You just left, Have a good day!");
     command = 0;
   }else if(command == 41){
-    sender(LINE_TOKEN, "Password has been changed!");
+    sender(LINE_TOKEN, "Connected to Wifi Security System.");
     command = 0;
   }
 }
