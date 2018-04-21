@@ -100,7 +100,7 @@ void loop()
             
   if(digitalRead(51)){  // recieve wifi ap status check connection.
     door_num=21;
-    digitalWrite(41, 1);delay(50);digitalWrite(41, 1);  //  send to nodemcu#2 to send line notification.
+    digitalWrite(41, 1);delay(50);digitalWrite(41, 0);  //  send to nodemcu#2 to send line notification.
   }
   
   if(door_num==21){   // someone connect to AP
