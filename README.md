@@ -64,25 +64,16 @@ ________________________________________________________________________________
     * Act as cilent wifi.
     * Line notification with different 4 message for various situation.
     
-| หัวเรื่องแรก | หัวเรื่องที่สอง |
-| --------- | ---------- |
-|   เนื้อหา   |    เนื้อหา   |
-|   เนื้อหา   |    เนื้อหา   |
-    
 ## Installation
  List of several pieces of silicon board including how to connect each other.
- * LCD Display 16x2 Dot Matrix 
-| LCD           | Arduino Mega |   
-| ------------- |-------------|
-| col 3 is      | right-aligned | 
-| col 2 is      | centered      |
-| zebra stripes | are neat      |
-| zebra stripes | are neat      |
+ * LCD Display 16x2 Dot Matrix
 
-| หัวเรื่องแรก | หัวเรื่องที่สอง |
+| LCD | Arduino Mega |
 | --------- | ---------- |
 |   เนื้อหา   |    เนื้อหา   |
 |   เนื้อหา   |    เนื้อหา   |
+|   VCC   |    VIN   |
+|   GND   |    GND   |
  
  * Infrared sensor module (IR)
  | IR  | Arduino Mega |
