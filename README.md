@@ -22,10 +22,10 @@ ________________________________________________________________________________
  * When you want to get in. if you turn on wifi, your phone will connect to system automatically then you walk in front of the door
  if you phone don't regconize the password, fill the password.
  ### This system have 2 mode (it's reported you on the LCD Screen Always).
- * FULL ACTIVATED MODE
+* FULL ACTIVATED MODE
   * it's appear when you outside
   * The Infrared will turn on and will detect abnormal activities. and report to you.
- * SEMI ACTIVATED MODE
+* SEMI ACTIVATED MODE
   * Appear When you inside your place.
   * Infrared turn off.
   * You can use keypad function
@@ -173,3 +173,4 @@ ________________________________________________________________________________
 Faculty of Information Technology
 
 King Mongkut's Institute of Technology Ladkrabang
+
