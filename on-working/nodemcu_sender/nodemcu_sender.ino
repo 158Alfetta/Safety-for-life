@@ -6,7 +6,9 @@ String LINE_TOKEN = "WtMZXp16iiizFrFegxtgZnh61U7QTBjEvrdbThZgI3e";
 int command = 0;
 
 void sender(String LINE_Token, String message){
-  
+  //##########################################
+  //line notification
+  //##########################################
     WiFiClientSecure client;
 
   if (!client.connect("notify-api.line.me", 443)) {
@@ -42,10 +44,10 @@ void sender(String LINE_Token, String message){
 void setup() {
   Serial.begin(115200);
   WiFi.begin("redmi4x", "77777776");
-  pinMode(D1, INPUT); // wire to mega 35
-  pinMode(D2, INPUT); // wire to mega 37
-  pinMode(D3, INPUT); // wire to mega 39
-  pinMode(D4, INPUT); // wire to mega 41
+  pinMode(D0, INPUT); // wire to mega 35
+  pinMode(D1, INPUT); // wire to mega 37
+  pinMode(D2, INPUT); // wire to mega 39
+  pinMode(D3, INPUT); // wire to mega 41
 }
 
 void loop() {
@@ -53,19 +55,19 @@ void loop() {
     delay(500);
     Serial.print(".");
   }
-  if(!digitalRead(D1)){
-    sender(LINE_TOKEN, "Alert!! WITHOUT PERMISSION SIGN IN. YOU PLACE WAS INVADED");
+  if(!digitalRead(D0)){
+    sender(LINE_TOKEN, "Alert!! WITHOUT PERMISSION DETECTED. YOU PLACE MAYBE WAS INVADED");
     delay(200);
   }
-  if(!digitalRead(D2)){
+  if(!digitalRead(D1)){
     sender(LINE_TOKEN, "Welcome Back! You're home now. If it not you, you place was invaded");
     delay(200);
   }
-  if(!digitalRead(D3)){
+  if(!digitalRead(D2)){
      sender(LINE_TOKEN, "You just left, Have a good day!");
      delay(200);
   }
-  if(!digitalRead(D4)){
+  if(!digitalRead(D3)){
     sender(LINE_TOKEN, "Connected to Wifi Security System.");
     delay(200);
   }
