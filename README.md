@@ -32,13 +32,13 @@ ________________________________________________________________________________
      * Press "&ast;&ast;&ast;&ast;" to show corrent password.
      * Press "000#" to going out.
      * Press "&ast;#&ast;#" to change password.
-  ### How Secure?
-   * Password Protection 8 PIN.
-   * Immediately report to you when have connection to system.
-   * Can check the time on Line Application when you went out or you get in.
-   * Don't use physical method to get in (like key or RFID card), So in case of you forget the key. you don't need to concern.
-   * Detect and report you when have an abnormal activity at the door.
-   * We don't use Bluetooth because it's unsafe than WiFi system and you need to pairing.
+ ### How Secure?
+  * Password Protection 8 PIN.
+  * Immediately report to you when have connection to system.
+  * Can check the time on Line Application when you went out or you get in.
+  * Don't use physical method to get in (like key or RFID card), So in case of you forget the key. you don't need to concern.
+  * Detect and report you when have an abnormal activity at the door.
+  * We don't use Bluetooth because it's unsafe than WiFi system and you need to pairing.
 _____________________________________________________________________________________________________
 
 
