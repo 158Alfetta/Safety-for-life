@@ -164,7 +164,7 @@ ________________________________________________________________________________
  
 
 ## Author
-* 60070112 Apinan Pongratanachote
+* 60070112 Apinant Pongratanachote
 * 60070120 Udomeak Chumthongma
 * 60070180 Poowis Khumphai
 
