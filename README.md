@@ -32,6 +32,7 @@ ________________________________________________________________________________
      * Press "&ast;&ast;&ast;&ast;" to show corrent password.
      * Press "000#" to going out.
      * Press "&ast;#&ast;#" to change password.
+     * Press "####" open the door temporary (8 seconds).
  ### How Secure?
   * Password Protection 8 PIN.
   * Immediately report to you when have connection to system.
