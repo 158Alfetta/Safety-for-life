@@ -164,10 +164,13 @@ ________________________________________________________________________________
  
 
 ## Author
-* 60070112 อภินันท์ พงศ์รัตนโชติ
-* 60070120 อุดมเอก ชุมทองมา
-* 60070180 ภูวิศ คุ้มภัย
+* 60070112 Apinan Pongratanachote
+* 60070120 Udomeak Chumthongma
+* 60070180 Poowis Khumphai
 
+## Instructor
+* Asst.Prof.Dr.Panwit Tuwanut
+* Asst.Prof.Dr.Kitsuchart Pasupa
 ---
 
 Faculty of Information Technology
