@@ -71,8 +71,8 @@ pinMode(10, OUTPUT);  // speaker
 //sender section Connect to Nodemcu2
 pinMode(35, OUTPUT);// (wire to D0) //line notify alert
 pinMode(37, OUTPUT);// (wire to D1) //line notify sign-in
-pinMode(39, OUTPUT);// (wire to D0) //line notify alert
-pinMode(41, OUTPUT);// (wire to D1) //line notify sign-in
+pinMode(39, OUTPUT);// (wire to D2) //line notify alert
+pinMode(41, OUTPUT);// (wire to D3) //line notify sign-in
 MegaSerial.begin(57600);
 digitalWrite(35, 1);
 digitalWrite(37, 1);
@@ -90,8 +90,8 @@ void loop()
     // will send notification to line and alarm.
     lcd.clear();lcd.print("Alert!");delay(500);lcd.clear();
     SendingMessage(35); //sending alert message.
-    delay(5000); // waiting for sending  
-    for(int i=0;i<3;i++){    //  alarm play
+    delay(3500); // waiting for sending  
+    for(int i=0;i<15;i++){    //  alarm play
       tone(10, NOTE_C4, 200);
       delay(300);
       tone(10, NOTE_A3, 200); 
